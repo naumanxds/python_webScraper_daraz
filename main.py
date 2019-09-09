@@ -13,17 +13,17 @@ INCREMENT_ONE = 1
 SLEEP_SEC = 2
 
 # create file with time attached to it for safty purposes
-fHandle = open('csvFileCreatedAt-' + datetime.now().strftime('%H-%M-%S') + '.csv', 'w')
+fHandle = open('csvFileCreatedAt-' + datetime.now().strftime('%H-%M-%S') + '.csv', 'w', encoding='utf-8')
 
 # write in file
 def writeFile(data, url = ''):
 	try:
 		csvWriter = csv.writer(fHandle)
 		csvWriter.writerow(data)
-	except:
-		print('		>> Entry missed due to some error from this link = ' + url)
-		print('		>> ERRROR = ' + format(e))
-		print(' 	==========')
+	except Exception as e:
+		print('		>> Error in Writing Data into the file => ' + url)
+		print(' 	=========================================')
+		print('		>> ERRROR => ' + format(e))
 
 # get html of the provided url page
 def getHtml(url):
@@ -35,11 +35,10 @@ def getHtml(url):
 
 # iterate through the fetched links get data
 def iterateLinks(subLinks):
-	for link in subLinks:
+	for l in subLinks:
 		data = []
-		html = getHtml(link['url'])
+		html = getHtml(l['url'])
 		time.sleep(SLEEP_SEC)
-			
 		try:
 			# product name
 			fetched = html.find('span', {'class' : 'pdp-mod-product-badge-title'})
@@ -114,9 +113,9 @@ def iterateLinks(subLinks):
 			# write data in file
 			writeFile(data)
 		except Exception as e:
-			print('		>> Entry missed due to some error from this link = ' + link['url'])
-			print('		>> ERRROR = ' + format(e))
-			print(' 	==========')
+			print('		>> Entry missed due to some error from this link => ' + l['url'])
+			print(' 	===================================================')
+			print('		>> ERRROR => ' + format(e))
 
 
 # input for user
