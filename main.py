@@ -22,16 +22,17 @@ def writeFile(data, url = ''):
 		csvWriter.writerow(data)
 	except Exception as e:
 		print('		>> Error in Writing Data into the file => ' + url)
-		print(' 	=========================================')
 		print('		>> ERRROR => ' + format(e))
 
 # get html of the provided url page
 def getHtml(url):
 	try:
 		response = requests.get(url)
+		return BeautifulSoup(response.text, 'html.parser')
 	except Exception as e:
-		print('Oops! Something went worng fetching the link - ' + format(e))
-	return BeautifulSoup(response.text, 'html.parser')
+		print('		>> Oops! Something went worng in fetching the link - ' + format(e))
+
+	return False
 
 # iterate through the fetched links get data
 def iterateLinks(subLinks):
