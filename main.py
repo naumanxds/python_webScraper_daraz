@@ -46,78 +46,73 @@ def writeFile(data, url = ''):
 def iterateLinks(links):
     for link in links:
         html = getHtml(link)
-        # try:
+        try:
             # product name
-        title = html.find('span', {'class' : 'pdp-mod-product-badge-title'})
-        if str(title) != NOT_FOUND:
-            title = title.get_text().strip()
-        else:
-            title = 'Title not found'
+	        title = html.find('span', {'class' : 'pdp-mod-product-badge-title'})
+	        if str(title) != NOT_FOUND:
+	            title = title.get_text().strip()
+	        else:
+	            title = 'Title not found'
 
-        # prodct price
-        price = html.find('span', {'class' : 'pdp-price pdp-price_type_normal pdp-price_color_orange pdp-price_size_xl'})
-        if str(price) != NOT_FOUND:
-            price = price.get_text().split('Rs. ')[1]
-        else:
-            price = 'Price not found'
+	        # prodct price
+	        price = html.find('span', {'class' : 'pdp-price pdp-price_type_normal pdp-price_color_orange pdp-price_size_xl'})
+	        if str(price) != NOT_FOUND:
+	            price = price.get_text().split('Rs. ')[1]
+	        else:
+	            price = 'Price not found'
 
-        # breadcrums
-        breadcrums = ''
-        breadcrum = html.find_all('span', {'class' : 'breadcrumb_item_text'})
-        print((html.find('ul', {'id' : 'J_breadcrumb'})).text(separator=' > ', strip='\n'))
-        exit()
-        if str(breadcrum) != NOT_FOUND:
-            for l in breadcrum:
-                breadcrum += ' > ' + l.find('span').get_text().strip()
-        else:
-            breadcrum = 'Breadcrums not found'
+	        # breadcrums
+	        breadcrum = html.find('ul', {'id' : 'J_breadcrumb'})
+	        if str(breadcrum) != NOT_FOUND:
+	            breadcrum = breadcrum.get_text(separator=' > ', strip=True)
+	        else:
+	            breadcrum = 'Breadcrums not found'
 
-        # details points
-        detail = html.find('div', {'class' : 'html-content pdp-product-highlights'})
-        if str(detail) != NOT_FOUND:
-            detail = detail.find_all('li')
-            for l in detail:
-                detail += ' - ' + l.get_text() + '\n'
-        else:
-            detail = 'Product Description points not found'
+	        # details points
+	        detail = html.find('div', {'class' : 'html-content pdp-product-highlights'})
+	        if str(detail) != NOT_FOUND:
+	        	detail = detail.get_text(separator='\n', strip=True)
+	        else:
+	            detail = 'Product Description points not found'
 
-        # product descripton
-        descripton = html.find('div', {'class' : 'html-content detail-content'})
-        if str(descripton) != NOT_FOUND:
-            descripton = descripton.get_text()
-        else:
-            descripton = 'Product Detail Description not found'
+	        # product descripton
+	        descripton = html.find('div', {'class' : 'html-content detail-content'})
+	        if str(descripton) != NOT_FOUND:
+	            descripton = descripton.get_text()
+	        else:
+	            descripton = 'Product Detail Description not found'
 
-        # product specifications
-        specification = html.find_all('li', {'class' : 'key-li'})
-        if str(specification) != NOT_FOUND:
-            for l in specification:
-                specification += l.find('span').get_text() + ' : ' + l.find('div').get_text() + '\n'
-        else:
-            specification = 'Product Specifications not found'
+	        # product specifications
+	        specifications = ''
+	        specification = html.find_all('li', {'class' : 'key-li'})
+	        if str(specification) != NOT_FOUND:
+	            for l in specification:
+	                specifications += l.find('span').get_text() + ' : ' + l.find('div').get_text() + '\n'
+	        else:
+	            specifications = 'Product Specifications not found'
 
-        # box content
-        boxContent = html.find('div', {'class' : 'box-content'})
-        if str(boxContent) != NOT_FOUND:
-            boxContent = boxContent.find('span').get_text() + ' : ' + boxContent.find('div').get_text()
-        else:
-            boxContent = 'Box Content not found'
+	        # box content
+	        boxContent = html.find('div', {'class' : 'box-content'})
+	        if str(boxContent) != NOT_FOUND:
+	            boxContent = boxContent.find('span').get_text() + ' : ' + boxContent.find('div').get_text()
+	        else:
+	            boxContent = 'Box Content not found'
 
-        # product pictures
-        pics = html.find_all('img', {'class' : 'pdp-mod-common-image item-gallery__thumbnail-image'})
-        images = []
-        if str(pics) != NOT_FOUND:
-            for l in pics:
-                iamges.append(l.get('src').split('.jpg_')[0] + '.jpg_400x400.jpg')
-        else:
-            images = ['IMAGES NOT FOUND']
+	        # product pictures
+	        pics = html.find_all('img', {'class' : 'pdp-mod-common-image item-gallery__thumbnail-image'})
+	        images = []
+	        if str(pics) != NOT_FOUND:
+	            for l in pics:
+	                images.append(l.get('src').split('.jpg_')[0] + '.jpg_400x400.jpg')
+	        else:
+	            images = ['Images not found']
 
-        # write data in file
-        writeFile([title, price, breadcrum, detail, descripton, specification, boxContent] + images)
-        print('         ** Product Done => ' + str(link))
-        # except Exception as e:
-        #     print('     >> Entry missed due to some error from this link => ' + str(link))
-        #     print('     >> ERRROR => ' + format(e))
+	        # write data in file
+	        writeFile([title, price, breadcrum, detail, descripton, specifications, boxContent] + images)
+	        print('         	** Product Done => ' + str(link))
+        except Exception as e:
+            print('     >> Entry missed due to some error from this link => ' + str(link))
+            print('     >> ERRROR => ' + format(e))
 
 
 # input for user
@@ -148,7 +143,6 @@ while True:
         links.append('https:' + loop.find('a').get('href'))
 
     iterateLinks(links)
-    exit()
     print(' >> Page Done >> ' + str(count - 1) + ' Done URL => ' + siteUrl)
     siteUrl = html.find('li', {'title' : count})
     if str(link) == NOT_FOUND or str(siteUrl) == NOT_FOUND:
